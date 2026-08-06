@@ -1,0 +1,71 @@
+# Central Interior Business Accelerator — Website
+
+A Next.js website for the Central Interior Business Accelerator (CIBA), inspired by Wealthsimple's animated homepage.
+
+## Features
+
+- Animated hero: shifting brand-colour gradients, floating image tiles, and a self-drawing market-style line
+- Pill navigation bar with CIBA branding (Home, About, Programs, Partners, News, Contact Us)
+- About, Programs, Partners, News, and Contact sections
+- Pause/play control for the hero animation (also respects `prefers-reduced-motion`)
+- Fully responsive
+
+## Running locally
+
+```bash
+npm install
+npm run dev
+```
+
+Then open http://localhost:3000
+
+## Adding your own images
+
+All images live in **`public/images/`** and are picked up automatically — the
+server checks which files exist, so nothing ever shows as broken. Supported
+extensions everywhere: `.jpg`, `.jpeg`, `.png`, `.webp` (logos also `.svg`).
+
+### Hero animation (floating tiles + centre image)
+
+Drop any photos into `public/images/hero/` — **any filename, no config
+needed**. They're detected automatically; dummy picsum.photos images are shown
+only while the folder is empty.
+
+**How many?** Anything from 8 to 20 works well — around 14 is the sweet spot.
+Square-ish photos around 500×500px look best.
+
+### Everything else (drop the file in — no code changes needed)
+
+| Image | File to add |
+| --- | --- |
+| About section photo (home) | `public/images/about.jpg` |
+| News cards (3) | `public/images/news/news-1.jpg` … `news-3.jpg` |
+| Supporter logos (8, in order) | `public/images/partners/supporter-1.png` … `supporter-8.png` |
+| Team photos | `public/images/team/<name>.jpg`, e.g. `sachin-singh.jpg`, `fiona-chan.jpg` |
+| Program logos | `public/images/programs/tru-generator.png`, `innovate-bc.png`, `accelerate-ip.png`, `accelerate-okanagan.png`, `discovery-foundation.png` |
+
+Missing news/about images fall back to placeholders; missing team photos show
+initials; missing logos show the organization's name (supporters) or nothing
+(programs).
+
+Note: in production (`npm run build`), images are detected at build time — 
+rebuild after adding new ones. The dev server picks them up on refresh.
+
+## Brand colours
+
+| Colour | Hex |
+| --- | --- |
+| Plum | `#615b73` |
+| Sage | `#a9d3bd` |
+| Ink | `#3c352f` |
+| Cream | `#f4f2e9` |
+| White | `#ffffff` |
+
+## Project structure
+
+```
+app/            pages, layout, global styles
+components/     Navbar, Hero (animation), Footer, SmartImage
+lib/            siteImages.js — hero image configuration
+public/images/  ← your images go here
+```
