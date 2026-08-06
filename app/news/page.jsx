@@ -25,24 +25,39 @@ export default function NewsPage() {
           </div>
         </section>
 
-        <section className="section">
-          <div className="container">
-            <div className="news-grid">
-              {NEWS.map((n, i) => (
-                <article
-                  className="news-card reveal"
-                  style={{ transitionDelay: `${i * 90}ms` }}
-                  key={n.title}
-                >
+        <section className="section section--cream">
+          <div className="container news-list">
+            {NEWS.map((n, i) => (
+              <a
+                href={`/news/${n.slug}`}
+                className="news-row reveal"
+                style={{ transitionDelay: `${i * 80}ms` }}
+                key={n.slug}
+              >
+                <div className="news-row__media">
                   <img src={findImage(n.base) ?? n.fallback} alt="" />
-                  <div className="news-card__body">
-                    <span className="news-card__date">{n.tag}</span>
-                    <h3>{n.title}</h3>
-                    <p>{n.text}</p>
+                </div>
+                <div className="news-row__body">
+                  <div className="news-meta">
+                    <span className="news-meta__avatar" aria-hidden="true">
+                      {n.author.slice(0, 1)}
+                    </span>
+                    <span>
+                      {n.author} · {n.date} · {n.readTime}
+                    </span>
                   </div>
-                </article>
-              ))}
-            </div>
+                  <h2>{n.title}</h2>
+                  <p>{n.text}</p>
+                  <div className="news-row__foot">
+                    <span>{n.views} views</span>
+                    <span className="news-likes">
+                      {n.likes > 0 ? n.likes : ""}{" "}
+                      <span aria-hidden="true">{n.likes > 0 ? "♥" : "♡"}</span>
+                    </span>
+                  </div>
+                </div>
+              </a>
+            ))}
           </div>
         </section>
       </main>

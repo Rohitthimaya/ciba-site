@@ -6,7 +6,7 @@ const LINKS = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/programs", label: "Programs" },
-  { href: "/#partners", label: "Partners" },
+  { href: "/partners", label: "Partners" },
   { href: "/news", label: "News" },
   { href: "/#contact", label: "Contact Us" },
 ];
@@ -30,8 +30,7 @@ export default function Navbar() {
         </ul>
 
         <div className="nav__actions">
-          <a className="btn btn--ghost" href="/#contact">Contact us</a>
-          <a className="btn btn--dark" href="/#contact">Get started</a>
+          <a className="btn btn--dark" href="/#contact">Contact us</a>
         </div>
 
         <button

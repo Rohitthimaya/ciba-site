@@ -1,14 +1,16 @@
 /**
- * Supporter tile: shows the logo (resolved server-side from
- * public/images/partners/) when it exists, otherwise the name as text.
- * Links out to the supporter's website in a new tab.
+ * Supporter / partner tile: shows the logo (resolved server-side)
+ * when it exists, otherwise the name as text.
+ * Links out to the organization's website in a new tab.
+ * variant="logo" applies grayscale → color on hover (partners page).
  */
-export default function LogoTile({ name, src, url }) {
+export default function LogoTile({ name, src, url, variant }) {
+  const className = `partner${variant === "logo" ? " partner--logo" : ""}`;
   const content = src ? <img src={src} alt={name} /> : <span>{name}</span>;
 
   if (!url) {
     return (
-      <div className="partner" title={name}>
+      <div className={className} title={name}>
         {content}
       </div>
     );
@@ -16,7 +18,7 @@ export default function LogoTile({ name, src, url }) {
 
   return (
     <a
-      className="partner"
+      className={className}
       href={url}
       target="_blank"
       rel="noopener noreferrer"

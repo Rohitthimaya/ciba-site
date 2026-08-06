@@ -15,8 +15,9 @@ const SCENES = [
   // deep ink / ember
   "linear-gradient(160deg, #3c352f 0%, #6e5c4b 55%, #a98d72 100%)",
 ];
-const SCENE_MS = 7000;
-const MAX_TILES = 9;
+const SCENE_MS = 5200;
+const MAX_TILES = 11;
+const TILE_SPAWN_MS = 700;
 
 function rand(min, max) {
   return min + Math.random() * (max - min);
@@ -128,8 +129,8 @@ export default function Hero({ images }) {
       tile.appendChild(img);
       tilesLayer.appendChild(tile);
 
-      const duration = rand(5200, 8500);
-      const drift = rand(-160, -60);
+      const duration = rand(4400, 7200);
+      const drift = rand(-180, -50);
       const anim = tile.animate(
         [
           { opacity: 0, transform: "translateY(24px) scale(0.7)" },
@@ -174,7 +175,7 @@ export default function Hero({ images }) {
       if (chartAnim) chartAnim.cancel();
       chartAnim = chartPath.animate(
         [{ strokeDashoffset: len }, { strokeDashoffset: 0 }],
-        { duration: 4200, easing: "cubic-bezier(0.4, 0, 0.2, 1)", fill: "forwards" }
+        { duration: 3400, easing: "cubic-bezier(0.4, 0, 0.2, 1)", fill: "forwards" }
       );
       trackAnimation(chartAnim);
     }
@@ -183,7 +184,7 @@ export default function Hero({ images }) {
       if (running) return;
       running = true;
       sceneTimer = setInterval(nextScene, SCENE_MS);
-      tileTimer = setInterval(spawnTile, 950);
+      tileTimer = setInterval(spawnTile, TILE_SPAWN_MS);
       activeAnims.forEach((a) => a.play());
     }
 
@@ -191,6 +192,8 @@ export default function Hero({ images }) {
       running = false;
       clearInterval(sceneTimer);
       clearInterval(tileTimer);
+      sceneTimer = null;
+      tileTimer = null;
       activeAnims.forEach((a) => a.pause());
     }
 
@@ -200,12 +203,11 @@ export default function Hero({ images }) {
     window.addEventListener("resize", onResize);
 
     engineRef.current = { start, stop };
-    running = !reducedMotion;
     drawChart();
     if (reducedMotion) {
       setPaused(true);
     } else {
-      for (let i = 0; i < 5; i++) setTimeout(spawnTile, i * 350);
+      for (let i = 0; i < 6; i++) setTimeout(spawnTile, i * 280);
       start();
     }
 

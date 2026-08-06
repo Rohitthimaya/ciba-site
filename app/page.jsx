@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import Stats from "@/components/Stats";
 import ScrollReveal from "@/components/ScrollReveal";
 import LogoTile from "@/components/LogoTile";
+import SocialLinks from "@/components/SocialLinks";
 import { dummyImage } from "@/lib/siteImages";
 import { NEWS } from "@/lib/newsData";
 import { findImage, listImages } from "@/lib/serverImages";
@@ -195,22 +196,22 @@ export default function Home() {
               <a className="btn btn--ghost" href="/news">More posts</a>
             </div>
             <div className="news-feature-grid">
-              <a href="/news" className="news-card news-card--featured reveal">
-                <img src={newsImg(NEWS[0])} alt="" />
+              <a href={`/news/${NEWS[12].slug}`} className="news-card news-card--featured reveal">
+                <img src={newsImg(NEWS[12])} alt="" />
                 <div className="news-card__body">
-                  <span className="news-card__date">{NEWS[0].tag}</span>
-                  <h3>{NEWS[0].title}</h3>
-                  <p>{NEWS[0].text}</p>
+                  <span className="news-card__date">{NEWS[12].tag}</span>
+                  <h3>{NEWS[12].title}</h3>
+                  <p>{NEWS[12].text}</p>
                   <span className="card__link">Read more</span>
                 </div>
               </a>
               <div className="news-side">
-                {NEWS.slice(1).map((n, i) => (
+                {NEWS.slice(1, 3).map((n, i) => (
                   <a
-                    href="/news"
+                    href={`/news/${n.slug}`}
                     className="news-card news-card--row reveal"
                     style={{ transitionDelay: `${(i + 1) * 100}ms` }}
-                    key={n.title}
+                    key={n.slug}
                   >
                     <img src={newsImg(n)} alt="" />
                     <div className="news-card__body">
@@ -225,7 +226,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="section section--cream" id="partners">
+        <section className="section section--cream" id="supporters">
           <div className="container supporters reveal">
             <p className="eyebrow">Our supporters</p>
             <h2>Stronger together</h2>
@@ -265,6 +266,7 @@ export default function Home() {
               and path forward.
             </p>
             <a className="btn btn--light btn--lg" href="mailto:hello@ciba.example">Contact us</a>
+            <SocialLinks variant="on-dark" className="cta__socials" />
           </div>
         </section>
       </main>

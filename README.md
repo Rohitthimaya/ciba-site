@@ -39,14 +39,14 @@ Square-ish photos around 500×500px look best.
 | Image | File to add |
 | --- | --- |
 | About section photo (home) | `public/images/about.jpg` |
-| News cards (3) | `public/images/news/news-1.jpg` … `news-3.jpg` |
+| News posts | `public/images/news/news-1.jpg` … (match each post's `base` in `lib/newsData.js`) |
 | Supporter logos (8, in order) | `public/images/partners/supporter-1.png` … `supporter-8.png` |
+| Partner logos (13, in order) | `public/images/partners/partner-1.png` … `partner-13.png` |
 | Team photos | `public/images/team/<name>.jpg`, e.g. `sachin-singh.jpg`, `fiona-chan.jpg` |
 | Program logos | `public/images/programs/tru-generator.png`, `innovate-bc.png`, `accelerate-ip.png`, `accelerate-okanagan.png`, `discovery-foundation.png` |
 
 Missing news/about images fall back to placeholders; missing team photos show
-initials; missing logos show the organization's name (supporters) or nothing
-(programs).
+initials; missing logos show the organization's name as text until you add the file.
 
 Note: in production (`npm run build`), images are detected at build time — 
 rebuild after adding new ones. The dev server picks them up on refresh.

@@ -1,3 +1,5 @@
+import SocialLinks from "@/components/SocialLinks";
+
 export default function Footer() {
   return (
     <footer className="footer">
@@ -5,6 +7,7 @@ export default function Footer() {
         <div className="footer__brand">
           <img src="/images/ciba-logo.png" alt="Central Interior Business Accelerator" />
           <p>Helping Central Interior businesses launch, grow, and thrive.</p>
+          <SocialLinks variant="on-dark" className="footer__socials" />
         </div>
         <div className="footer__cols">
           <div>
@@ -15,7 +18,7 @@ export default function Footer() {
           </div>
           <div>
             <h4>Connect</h4>
-            <a href="/#partners">Partners</a>
+            <a href="/partners">Partners</a>
             <a href="/news">News</a>
             <a href="/#contact">Contact Us</a>
           </div>
