@@ -19,6 +19,10 @@ export const metadata = {
   title: "Central Interior Business Accelerator",
   description:
     "Central Interior Business Accelerator — helping businesses in the Central Interior launch, grow, and thrive.",
+  icons: {
+    icon: [{ url: "/favicon.png", type: "image/png" }],
+    apple: [{ url: "/apple-icon.png", type: "image/png" }],
+  },
 };
 
 export default function RootLayout({ children }) {
