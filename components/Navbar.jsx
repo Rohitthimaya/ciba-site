@@ -1,36 +1,61 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 const LINKS = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/programs", label: "Programs" },
+  { href: "/tru-generator", label: "TRU Generator" },
   { href: "/partners", label: "Partners" },
   { href: "/news", label: "News" },
-  { href: "/#contact", label: "Contact Us" },
 ];
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const isGen = pathname === "/tru-generator" || pathname?.startsWith("/tru-generator/");
 
   return (
-    <header className={`nav-wrap${open ? " open" : ""}`}>
+    <header className={`nav-wrap${isGen ? " nav-wrap--gen" : ""}${open ? " open" : ""}`}>
       <nav className="nav" aria-label="Main navigation">
         <a className="nav__logo" href="/">
-          <img src="/images/ciba-logo.png" alt="Central Interior Business Accelerator" />
+          {isGen ? (
+            <img
+              src="/images/generator/logo.png"
+              alt="TRU Generator"
+              className="nav__logo-img nav__logo-img--gen"
+            />
+          ) : (
+            <img
+              src="/images/ciba-logo.png"
+              alt="Central Interior Business Accelerator"
+              className="nav__logo-img"
+            />
+          )}
         </a>
 
         <ul className="nav__links">
-          {LINKS.map((l) => (
-            <li key={l.href}>
-              <a href={l.href}>{l.label}</a>
-            </li>
-          ))}
+          {LINKS.map((l) => {
+            const active =
+              l.href === "/"
+                ? pathname === "/"
+                : pathname === l.href || pathname?.startsWith(`${l.href}/`);
+            return (
+              <li key={l.href}>
+                <a href={l.href} className={active ? "is-active" : undefined}>
+                  {l.label}
+                </a>
+              </li>
+            );
+          })}
         </ul>
 
         <div className="nav__actions">
-          <a className="btn btn--dark" href="/#contact">Contact us</a>
+          <a className={`btn ${isGen ? "btn--gen" : "btn--dark"}`} href="/#contact">
+            Contact us
+          </a>
         </div>
 
         <button

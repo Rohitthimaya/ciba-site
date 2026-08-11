@@ -55,7 +55,8 @@ export default function ProgramsPage() {
                   mentorship, workshops, and events.
                 </p>
                 <p className="program-card__cta">
-                  Connect with us to learn more:{" "}
+                  <a href="/tru-generator">Explore TRU Generator</a>
+                  {" · "}
                   <a href="mailto:generator@acceleratebusiness.ca">
                     generator@acceleratebusiness.ca
                   </a>

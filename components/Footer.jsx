@@ -15,6 +15,7 @@ export default function Footer() {
             <a href="/">Home</a>
             <a href="/about">About</a>
             <a href="/programs">Programs</a>
+            <a href="/tru-generator">TRU Generator</a>
           </div>
           <div>
             <h4>Connect</h4>

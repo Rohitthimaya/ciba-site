@@ -44,6 +44,7 @@ Square-ish photos around 500×500px look best.
 | Partner logos (13, in order) | `public/images/partners/partner-1.png` … `partner-13.png` |
 | Team photos | `public/images/team/<name>.jpg`, e.g. `sachin-singh.jpg`, `fiona-chan.jpg` |
 | Program logos | `public/images/programs/tru-generator.png`, `innovate-bc.png`, `accelerate-ip.png`, `accelerate-okanagan.png`, `discovery-foundation.png` |
+| TRU Generator page | `public/images/generator/hero.jpg`, `visit.jpg`, `events.jpg`, `meet.jpg`, `quote.jpg` |
 
 Missing news/about images fall back to placeholders; missing team photos show
 initials; missing logos show the organization's name as text until you add the file.
