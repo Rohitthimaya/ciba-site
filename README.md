@@ -21,7 +21,14 @@ Then open http://localhost:3000
 
 ## Deploy (public site + admin)
 
-See **[DEPLOY.md](./DEPLOY.md)** for a step-by-step guide covering Vercel (recommended), Netlify, self-hosted VPS, domains, and Supabase setup for both apps.
+See **[DEPLOY.md](./DEPLOY.md)** for a step-by-step handoff guide (domain + server), including:
+
+1. **Keep Vercel and attach your real domain** (fastest)
+2. **Run both apps on your own Linux server**
+3. Other hosts (Netlify, etc.)
+
+Printable PDF: [`docs/CIBA-Hosting-Domain-Handoff-Guide.pdf`](./docs/CIBA-Hosting-Domain-Handoff-Guide.pdf)
+
 ## Adding your own images
 
 All images live in **`public/images/`** and are picked up automatically — the
