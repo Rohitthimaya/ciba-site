@@ -2,8 +2,10 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
 import GenChrome from "@/components/GenChrome";
+import GenCalendar from "@/components/GenCalendar";
 import { findImage } from "@/lib/serverImages";
 import { dummyImage } from "@/lib/siteImages";
+import { getPublishedEvents, getSiteSettings } from "@/lib/cms";
 
 export const metadata = {
   title: "TRU Generator — Central Interior Business Accelerator",
@@ -11,7 +13,6 @@ export const metadata = {
     "Make your passion your paycheck. Start your entrepreneurial journey at the TRU Generator — mentorship, education, and venture support for TRU students, faculty, staff, and alumni.",
 };
 
-const TRU_GEN = "https://www.tru.ca/generator.html";
 const VIDEO_ID = "teA9WDKivuY";
 
 const FEATURES = [
@@ -26,11 +27,10 @@ const FEATURES = [
   {
     title: "Events",
     text: "Speakers, workshops, programs, and activities. Look for us where innovative things are happening.",
-    cta: "Learn more",
-    href: `${TRU_GEN}#events`,
+    cta: "View calendar",
+    href: "#calendar",
     img: "images/generator/events",
     fallback: dummyImage("ciba-gen-events", 640, 420),
-    external: true,
   },
   {
     title: "Come Meet Us",
@@ -42,8 +42,10 @@ const FEATURES = [
   },
 ];
 
-export default function TruGeneratorPage() {
+export default async function TruGeneratorPage() {
   const quoteImg = findImage("images/generator/quote") ?? dummyImage("ciba-gen-quote", 1400, 700);
+  const [events, settings] = await Promise.all([getPublishedEvents(), getSiteSettings()]);
+  const videoId = settings.generator?.videoId || VIDEO_ID;
 
   return (
     <>
@@ -63,7 +65,7 @@ export default function TruGeneratorPage() {
             <div className="gen-intro__media reveal">
               <div className="gen-video">
                 <iframe
-                  src={`https://www.youtube.com/embed/${VIDEO_ID}?rel=0`}
+                  src={`https://www.youtube.com/embed/${videoId}?rel=0`}
                   title="Visit TRU Generator"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
@@ -109,6 +111,22 @@ export default function TruGeneratorPage() {
                   </div>
                 </article>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Events calendar */}
+        <section className="gen-calendar-wrap" id="calendar">
+          <div className="gen-hero__frame">
+            <div className="gen-calendar-wrap__head reveal">
+              <h2>Upcoming events</h2>
+              <p>
+                Workshops, mentorship hours, speaker nights, and more — browse by
+                month, week, day, or year.
+              </p>
+            </div>
+            <div className="reveal">
+              <GenCalendar events={events} />
             </div>
           </div>
         </section>

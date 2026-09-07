@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@ciba/shared": ["../packages/shared/index.js"],
+      "@ciba/shared/*": ["../packages/shared/*"]
+    }
+  }
+}

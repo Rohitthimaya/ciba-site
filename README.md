@@ -65,8 +65,21 @@ rebuild after adding new ones. The dev server picks them up on refresh.
 ## Project structure
 
 ```
-app/            pages, layout, global styles
-components/     Navbar, Hero (animation), Footer, SmartImage
-lib/            siteImages.js — hero image configuration
-public/images/  ← your images go here
+app/            public site pages, layout, global styles
+admin/          separate admin CMS app (see admin/README.md)
+components/     Navbar, Hero, Footer, GenCalendar, …
+lib/            CMS helpers, news/events fallbacks, images
+packages/shared role helpers shared with admin
+supabase/       SQL migrations + seed
+public/images/  static images
+```
+
+## Admin CMS
+
+A separate admin app manages news, events, people, partners, programs, FAQs, media, settings, and users.
+
+See **[admin/README.md](admin/README.md)** for Supabase setup, env vars, and deploying `ciba-admin` on Vercel (Root Directory = `admin`).
+
+```bash
+npm run dev:admin   # http://localhost:3002
 ```

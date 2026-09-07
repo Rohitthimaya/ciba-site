@@ -40,7 +40,7 @@ export default function GenChrome({ active = "home" }) {
             TRU Generator
           </a>
           <a
-            href="/tru-generator#events"
+            href="/tru-generator#calendar"
             className={active === "events" ? "is-active" : undefined}
           >
             Events

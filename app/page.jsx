@@ -6,10 +6,10 @@ import ScrollReveal from "@/components/ScrollReveal";
 import LogoTile from "@/components/LogoTile";
 import SocialLinks from "@/components/SocialLinks";
 import { dummyImage } from "@/lib/siteImages";
-import { NEWS } from "@/lib/newsData";
+import { getPublishedNews } from "@/lib/cms";
 import { findImage, listImages } from "@/lib/serverImages";
 
-const newsImg = (n) => findImage(n.base) ?? n.fallback;
+const newsImg = (n) => (n.base && findImage(n.base)) || n.image || n.fallback;
 
 const SERVICES = [
   "Market Validation",
@@ -67,7 +67,11 @@ const SUPPORTERS = [
   { name: "Innovate BC", url: "https://www.innovatebc.ca" },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const NEWS = await getPublishedNews();
+  const featured = NEWS[0] || NEWS[NEWS.length - 1];
+  const side = NEWS.slice(1, 3);
+
   return (
     <>
       <Navbar />
@@ -196,17 +200,19 @@ export default function Home() {
               <a className="btn btn--ghost" href="/news">More posts</a>
             </div>
             <div className="news-feature-grid">
-              <a href={`/news/${NEWS[12].slug}`} className="news-card news-card--featured reveal">
-                <img src={newsImg(NEWS[12])} alt="" />
-                <div className="news-card__body">
-                  <span className="news-card__date">{NEWS[12].tag}</span>
-                  <h3>{NEWS[12].title}</h3>
-                  <p>{NEWS[12].text}</p>
-                  <span className="card__link">Read more</span>
-                </div>
-              </a>
+              {featured && (
+                <a href={`/news/${featured.slug}`} className="news-card news-card--featured reveal">
+                  <img src={newsImg(featured)} alt="" />
+                  <div className="news-card__body">
+                    <span className="news-card__date">{featured.tag}</span>
+                    <h3>{featured.title}</h3>
+                    <p>{featured.text}</p>
+                    <span className="card__link">Read more</span>
+                  </div>
+                </a>
+              )}
               <div className="news-side">
-                {NEWS.slice(1, 3).map((n, i) => (
+                {side.map((n, i) => (
                   <a
                     href={`/news/${n.slug}`}
                     className="news-card news-card--row reveal"

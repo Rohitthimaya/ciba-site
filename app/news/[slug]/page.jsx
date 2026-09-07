@@ -2,16 +2,18 @@ import { notFound } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
-import { NEWS, getPost, getRecentPosts } from "@/lib/newsData";
+import { NEWS } from "@/lib/newsData";
+import { getNewsPost, getPublishedNews } from "@/lib/cms";
 import { findImage } from "@/lib/serverImages";
 
-export function generateStaticParams() {
-  return NEWS.map((n) => ({ slug: n.slug }));
+export async function generateStaticParams() {
+  const posts = await getPublishedNews();
+  return (posts.length ? posts : NEWS).map((n) => ({ slug: n.slug }));
 }
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = (await getNewsPost(slug)) || NEWS.find((n) => n.slug === slug);
   if (!post) return { title: "News — CIBA" };
   return {
     title: `${post.title} — Central Interior Business Accelerator`,
@@ -55,11 +57,12 @@ function renderBlock(block, i) {
 
 export default async function NewsArticlePage({ params }) {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = (await getNewsPost(slug)) || NEWS.find((n) => n.slug === slug);
   if (!post) notFound();
 
-  const img = findImage(post.base) ?? post.fallback;
-  const recent = getRecentPosts(post.slug, 3);
+  const img = (post.base && findImage(post.base)) || post.image || post.fallback;
+  const all = await getPublishedNews();
+  const recent = (all.length ? all : NEWS).filter((n) => n.slug !== post.slug).slice(0, 3);
   const shareUrl = `https://www.acceleratebusiness.ca/news/${post.slug}`;
   const shareText = encodeURIComponent(post.title);
   const contact = post.mediaContact;

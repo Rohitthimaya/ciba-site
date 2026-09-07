@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ScrollReveal from "@/components/ScrollReveal";
-import { NEWS } from "@/lib/newsData";
+import { getPublishedNews } from "@/lib/cms";
 import { findImage } from "@/lib/serverImages";
 
 export const metadata = {
@@ -9,7 +9,9 @@ export const metadata = {
   description: "News, announcements, and success stories from the Central Interior Business Accelerator.",
 };
 
-export default function NewsPage() {
+export default async function NewsPage() {
+  const NEWS = await getPublishedNews();
+
   return (
     <>
       <Navbar />
@@ -35,7 +37,7 @@ export default function NewsPage() {
                 key={n.slug}
               >
                 <div className="news-row__media">
-                  <img src={findImage(n.base) ?? n.fallback} alt="" />
+                  <img src={(n.base && findImage(n.base)) || n.image || n.fallback} alt="" />
                 </div>
                 <div className="news-row__body">
                   <div className="news-meta">
