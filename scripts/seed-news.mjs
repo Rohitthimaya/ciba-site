@@ -6,7 +6,7 @@
  *   node --env-file=admin/.env.local scripts/seed-news.mjs
  */
 import { createClient } from "@supabase/supabase-js";
-import { readFileSync, writeFileSync, unlinkSync } from "fs";
+import { readFileSync, writeFileSync, unlinkSync, existsSync } from "fs";
 import { pathToFileURL } from "url";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -52,7 +52,12 @@ function parseDate(label) {
 
 function findImagePath(base) {
   if (!base) return null;
-  // Prefer a stable public path; admin/public site resolve via findImage
+  const exts = ["jpg", "jpeg", "png", "webp"];
+  for (const ext of exts) {
+    const abs = path.join(root, "public", `${base}.${ext}`);
+    if (existsSync(abs)) return `${base}.${ext}`;
+  }
+  // Keep base path so the public site can resolve/fallback later
   return base;
 }
 
