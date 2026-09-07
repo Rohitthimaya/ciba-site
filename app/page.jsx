@@ -6,7 +6,7 @@ import ScrollReveal from "@/components/ScrollReveal";
 import LogoTile from "@/components/LogoTile";
 import SocialLinks from "@/components/SocialLinks";
 import { dummyImage } from "@/lib/siteImages";
-import { getPublishedNews } from "@/lib/cms";
+import { getPublishedNews, getSiteSettings } from "@/lib/cms";
 import { findImage, listImages } from "@/lib/serverImages";
 
 const newsImg = (n) => (n.base && findImage(n.base)) || n.image || n.fallback;
@@ -68,9 +68,14 @@ const SUPPORTERS = [
 ];
 
 export default async function Home() {
-  const NEWS = await getPublishedNews();
+  const [NEWS, settings] = await Promise.all([
+    getPublishedNews(),
+    getSiteSettings(),
+  ]);
   const featured = NEWS[0] || NEWS[NEWS.length - 1];
   const side = NEWS.slice(1, 3);
+  const contactEmail =
+    settings.contact?.email || "hello@acceleratebusiness.ca";
 
   return (
     <>
@@ -271,7 +276,9 @@ export default async function Home() {
               Tell us about your business — we&apos;ll help you find the right program, people,
               and path forward.
             </p>
-            <a className="btn btn--light btn--lg" href="mailto:hello@ciba.example">Contact us</a>
+            <a className="btn btn--light btn--lg" href={`mailto:${contactEmail}`}>
+              Contact us
+            </a>
             <SocialLinks variant="on-dark" className="cta__socials" />
           </div>
         </section>
