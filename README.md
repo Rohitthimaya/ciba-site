@@ -19,6 +19,9 @@ npm run dev
 
 Then open http://localhost:3000
 
+## Deploy (public site + admin)
+
+See **[DEPLOY.md](./DEPLOY.md)** for a step-by-step guide covering Vercel (recommended), Netlify, self-hosted VPS, domains, and Supabase setup for both apps.
 ## Adding your own images
 
 All images live in **`public/images/`** and are picked up automatically — the
