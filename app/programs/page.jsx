@@ -20,9 +20,21 @@ export const metadata = {
 };
 
 const WORKSHOPS = [
-  { date: "June 17, 2026", title: "Applied AI Opportunities in HealthTech, CleanTech & GreenTech" },
-  { date: "June 24, 2026", title: "Finding the Right AI Use Case: Workflow, Data & Readiness" },
-  { date: "July 8, 2026", title: "From Use Case to Implementation Blueprint" },
+  {
+    date: "November 10, 2026",
+    title: "Fall Session 1 – Find Your AI Opportunity",
+    href: "https://www.eventbrite.ca/e/fall-session-1-find-your-ai-opportunity-tickets-2003386574173",
+  },
+  {
+    date: "November 17, 2026",
+    title: "Fall Session 2 – Design and Test Your AI Workflow",
+    href: "https://www.eventbrite.ca/e/fall-session-2-design-and-test-your-ai-workflow-tickets-2003924049777",
+  },
+  {
+    date: "November 24, 2026",
+    title: "Fall Session 3 – Prove the Value and Plan the Rollout",
+    href: "https://www.eventbrite.ca/e/fall-session-3-prove-the-value-and-plan-the-rollout-tickets-2003925838126",
+  },
 ];
 
 export default function ProgramsPage() {
@@ -112,7 +124,7 @@ export default function ProgramsPage() {
                 <p className="program-card__cta">
                   Click to learn more:{" "}
                   <a
-                    href="https://www.accelerateokanagan.com"
+                    href="https://www.accelerateokanagan.com/programs/threesixty/"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -120,7 +132,7 @@ export default function ProgramsPage() {
                   </a>{" "}
                   ·{" "}
                   <a
-                    href="https://www.accelerateokanagan.com"
+                    href="https://www.accelerateokanagan.com/programs/delta/"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -138,16 +150,15 @@ export default function ProgramsPage() {
                   evaluate, and implement practical AI solutions that improve productivity
                   and competitiveness.
                 </p>
-                <p>Register below for our summer workshop series and move from AI awareness to practical implementation:</p>
+                <p>
+                  Register below for our fall workshop series to find your AI opportunity,
+                  design and test your workflow, and build a practical rollout plan.
+                </p>
                 <ul className="workshops">
                   {WORKSHOPS.map((w) => (
                     <li key={w.title}>
                       <span className="workshops__date">{w.date}</span>
-                      <a
-                        href={`mailto:info@acceleratebusiness.ca?subject=${encodeURIComponent(
-                          `Workshop registration: ${w.title}`
-                        )}`}
-                      >
+                      <a href={w.href} target="_blank" rel="noopener noreferrer">
                         {w.title}
                       </a>
                     </li>
@@ -156,13 +167,13 @@ export default function ProgramsPage() {
               </article>
 
               <article className="program-card program-card--promo reveal" style={{ transitionDelay: "160ms" }}>
-                <p className="program-promo__eyebrow">Summer series</p>
-                <h3>AI Workshop Summer&nbsp;Series</h3>
+                <p className="program-promo__eyebrow">Fall series</p>
+                <h3>AI Workshop Fall&nbsp;Series</h3>
                 <p>
                   Applied AI Implementation Clinics — Health, Clean &amp; Green —
                   Interior&nbsp;BC.
                 </p>
-                <a className="btn btn--light" href="mailto:info@acceleratebusiness.ca?subject=AI%20Workshop%20Summer%20Series">
+                <a className="btn btn--light" href="mailto:info@acceleratebusiness.ca?subject=AI%20Workshops%20Fall%20Series">
                   Register interest
                 </a>
               </article>
