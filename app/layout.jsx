@@ -1,4 +1,5 @@
 import { Fraunces, Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -28,7 +29,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${fraunces.variable} ${inter.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <Script
+          src="https://tag.simpli.fi/sifitag/5fa92fda-5148-457d-9d41-964bd6194640"
+          strategy="afterInteractive"
+        />
+      </body>
     </html>
   );
 }
