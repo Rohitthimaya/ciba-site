@@ -2,6 +2,13 @@
 
 import { useMemo, useState } from "react";
 import { eventsInRange, eventsOnDay, getUpcomingEvents } from "@/lib/generatorEvents";
+import TruIcon from "@/components/tru/TruIcon";
+
+/*
+ * Events calendar for the TRU Generator page (month / week / day / year views plus an
+ * "upcoming" sidebar). It renders inside the TRU page shell, so it is styled by the
+ * "Events calendar" section of app/tru-generator/tru.css and uses TRU's button classes.
+ */
 
 const VIEWS = [
   { id: "month", label: "Month" },
@@ -192,7 +199,7 @@ function DayList({ cursor, events }) {
               {formatTime(e.start)} – {formatTime(e.end)}
             </span>
           </div>
-          <h3>{e.title}</h3>
+          <h4>{e.title}</h4>
           <p>{e.description}</p>
           <p className="gcal-card__loc">{e.location}</p>
         </article>
@@ -269,16 +276,28 @@ export default function GenCalendar({ events = [] }) {
     <div className="gcal">
       <div className="gcal__toolbar">
         <div className="gcal__nav">
-          <button type="button" className="gcal__navbtn" onClick={() => setCursor(shiftCursor(view, cursor, -1))} aria-label="Previous">
-            ‹
+          <button
+            type="button"
+            className="gcal__navbtn"
+            onClick={() => setCursor(shiftCursor(view, cursor, -1))}
+            aria-label="Previous"
+          >
+            <TruIcon name="chevron-left" />
           </button>
           <button type="button" className="gcal__today" onClick={() => setCursor(today)}>
             Today
           </button>
-          <button type="button" className="gcal__navbtn" onClick={() => setCursor(shiftCursor(view, cursor, 1))} aria-label="Next">
-            ›
+          <button
+            type="button"
+            className="gcal__navbtn"
+            onClick={() => setCursor(shiftCursor(view, cursor, 1))}
+            aria-label="Next"
+          >
+            <TruIcon name="chevron-right" />
           </button>
-          <h3 className="gcal__label">{label}</h3>
+          <h6 className="gcal__label" aria-live="polite">
+            {label}
+          </h6>
         </div>
 
         <div className="gcal__views" role="tablist" aria-label="Calendar view">
@@ -336,7 +355,7 @@ export default function GenCalendar({ events = [] }) {
         </div>
 
         <aside className="gcal__aside">
-          <h4>Upcoming events</h4>
+          <h4 className="altHead">Upcoming events</h4>
           {upcoming.length === 0 && <p className="gcal-empty">No upcoming events.</p>}
           <ul className="gcal-upcoming">
             {upcoming.map((e) => (
@@ -365,10 +384,10 @@ export default function GenCalendar({ events = [] }) {
             ))}
           </ul>
           <a
-            className="gen-btn gen-btn--teal gcal__cta"
+            className="button tealbg nomargin"
             href="mailto:generator@acceleratebusiness.ca?subject=TRU%20Generator%20Events"
           >
-            Suggest an event <span aria-hidden="true">›</span>
+            Suggest an event
           </a>
         </aside>
       </div>

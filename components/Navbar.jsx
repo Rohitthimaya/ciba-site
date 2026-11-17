@@ -20,21 +20,16 @@ export default function Navbar() {
   return (
     <header className={`nav-wrap${isGen ? " nav-wrap--gen" : ""}${open ? " open" : ""}`}>
       <nav className="nav" aria-label="Main navigation">
-        <a className="nav__logo" href="/">
-          {isGen ? (
-            <img
-              src="/images/generator/logo.png"
-              alt="TRU Generator"
-              className="nav__logo-img nav__logo-img--gen"
-            />
-          ) : (
+        {/* On the Generator pages the TRU Generator logo sits on the banner photo instead */}
+        {!isGen && (
+          <a className="nav__logo" href="/">
             <img
               src="/images/ciba-logo.png"
               alt="Central Interior Business Accelerator"
               className="nav__logo-img"
             />
-          )}
-        </a>
+          </a>
+        )}
 
         <ul className="nav__links">
           {LINKS.map((l) => {

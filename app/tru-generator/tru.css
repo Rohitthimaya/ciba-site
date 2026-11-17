@@ -1,0 +1,640 @@
+/*
+ * TRU Generator pages — our layer on top of tru-port.css.
+ *
+ *   1. Typeface stand-in
+ *   2. Scope root: keep CIBA's global styles out
+ *   3. Icons (SVG replacements for TRU's icon font)
+ *   4. Behaviour hooks for components/tru/TruShell.jsx
+ *   5. Events calendar (not on tru.ca — styled to match)
+ */
+
+/* ---------------------------------------------------------------------------
+   1. Typeface stand-in
+
+   tru.ca sets its text in Adelle Sans, served from TRU's Adobe Fonts account. When an Adobe Fonts
+   kit is configured (ADOBE_FONTS_KIT_ID, see layout.jsx) the real "adelle-sans" loads and wins.
+   Otherwise text falls through to this face: Hanken Grotesk (SIL Open Font License, see
+   fonts/OFL.txt), whose letter widths match Adelle Sans to within about 1% at every weight used
+   here. The ascent/descent overrides give it Adelle Sans's vertical metrics so line boxes and
+   baselines land in the same place.
+   --------------------------------------------------------------------------- */
+@font-face {
+  font-family: "TRU Sans Fallback";
+  src: url("./fonts/HankenGrotesk-latin.woff2") format("woff2");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+  ascent-override: 93%;
+  descent-override: 29%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "TRU Sans Fallback";
+  src: url("./fonts/HankenGrotesk-latin.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+  ascent-override: 100%;
+  descent-override: 30%;
+  line-gap-override: 0%;
+}
+
+/* ---------------------------------------------------------------------------
+   2. Scope root
+   --------------------------------------------------------------------------- */
+.tru {
+  /* CIBA's globals.css sets these on <body>; tru.ca leaves them at browser defaults */
+  -webkit-font-smoothing: auto;
+  -moz-osx-font-smoothing: auto;
+  letter-spacing: normal;
+
+  /* Glyphs drawn by ::before / ::after rules in tru-port.css, used as CSS masks. The button chevron
+     is drawn a touch heavier than Font Awesome's "light" outline because browsers thicken small
+     text glyphs when rasterising them; this weight is the closest pixel match at 1x and 2x. */
+  --tru-i-angle-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 512'%3E%3Cpath d='M94 100L252 256L94 412' fill='none' stroke='%23000' stroke-width='40' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --tru-i-caret-right: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 512'%3E%3Cpath d='M88 124L220 256L88 388Z' fill='none' stroke='%23000' stroke-width='48' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --tru-i-envelope: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath d='M64 80H448A48 48 0 0 1 496 128V384A48 48 0 0 1 448 432H64A48 48 0 0 1 16 384V128A48 48 0 0 1 64 80ZM16 150L222 302Q256 326 290 302L496 150' fill='none' stroke='%23000' stroke-width='36' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  --tru-i-house: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 576 512'%3E%3Cpath d='M575.8 255.5c0 18-15 32.1-32 32.1l-32 0 .7 160.2c0 2.7-.2 5.4-.5 8.1l0 16.2c0 22.1-17.9 40-40 40l-16 0c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1L416 512l-24 0c-22.1 0-40-17.9-40-40l0-24 0-64c0-17.7-14.3-32-32-32l-64 0c-17.7 0-32 14.3-32 32l0 64 0 24c0 22.1-17.9 40-40 40l-24 0-31.9 0c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2l-16 0c-22.1 0-40-17.9-40-40l0-112c0-.9 0-1.9 .1-2.8l0-69.7-32 0c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z'/%3E%3C/svg%3E");
+}
+.tru h1,
+.tru h2,
+.tru h3 {
+  letter-spacing: normal;
+}
+/* TRU's "cta" button modifier shares its name with CIBA's call-to-action band in globals.css */
+.tru a.button.cta {
+  background-image: none;
+}
+/* screen-reader-only text: tru.ca's icon kit also keeps it on one line */
+.tru .sr-only {
+  white-space: nowrap;
+}
+/* tru.ca removes focus outlines entirely; keep them for keyboard users only */
+.tru a:focus-visible,
+.tru button:focus-visible,
+.tru [role="button"]:focus-visible {
+  outline: 2px solid #ffcd00;
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+   3. Icons
+
+   Each .tru-icon is a 1em-tall inline box on the icon font's 512-unit grid, sitting 0.125em below
+   the text baseline — the same box Font Awesome's glyphs occupy on tru.ca. Browsers snap a font's
+   descent to whole pixels when they build line boxes, so the offset is rounded the same way;
+   without that, lines containing an icon come out a fraction of a pixel taller than TRU's.
+   --------------------------------------------------------------------------- */
+.tru .tru-icon {
+  display: inline-block;
+  height: 1em;
+  line-height: 1;
+  vertical-align: -0.125em;
+  vertical-align: calc(-1 * round(0.125em, 1px));
+  font-style: normal;
+}
+.tru .tru-icon svg {
+  display: block;
+  width: auto;
+  height: 1em;
+  overflow: visible;
+}
+/* trailing non-breaking space inside the icon element (0.375em in the icon font) */
+.tru .tru-icon--sp {
+  padding-right: 0.375em;
+}
+/* TRU pads its plus/minus glyphs: `.fa-plus:before, .fa-minus:before { padding-right: .5rem }` */
+.tru .tru-icon--plus,
+.tru .tru-icon--minus {
+  padding-right: 0.5rem;
+}
+.tru .tru-icon--plus.tru-icon--sp,
+.tru .tru-icon--minus.tru-icon--sp {
+  padding-right: calc(0.5rem + 0.375em);
+}
+
+/* ---------------------------------------------------------------------------
+   4. Behaviour hooks
+   --------------------------------------------------------------------------- */
+
+/* Footer motto colours (inline styles on tru.ca) */
+.tru .footer-moto {
+  font-size: 2.65rem;
+  text-transform: uppercase;
+}
+.tru .footer-moto__find {
+  color: var(--teal);
+}
+.tru .footer-moto__your {
+  color: #fdb930;
+}
+
+/* Without TRU's 40px top bar (TruShell `truBar={false}`) the banner photo starts at the very top
+   of the shell, so the logo and title band keep their place on it. */
+.tru.tru--no-bar .fds-body-wrap {
+  background-position: 55% 0;
+}
+
+/* Section menu: on tablets and phones it is tucked behind the "Generator Menu" toggle */
+@media only screen and (max-width: 64rem) {
+  .tru .ipf-sectionmenu-collapse {
+    display: none;
+  }
+  .tru .ipf-sectionmenu-collapse.open {
+    display: block;
+  }
+}
+
+/* Round "back to top" buttons fade in once the page is scrolled */
+.tru a.to-top {
+  display: block;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.4s,
+    visibility 0s 0.4s,
+    background-color 0.2s ease-out;
+}
+.tru a.to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.4s,
+    background-color 0.2s ease-out;
+}
+
+/* Anchor targets used by the section menu */
+.tru #calendar,
+.tru #mentorship {
+  scroll-margin-top: 1.5rem;
+}
+
+/* ---------------------------------------------------------------------------
+   5. Events calendar
+
+   Built from the same parts as the rest of the page: the dark-blue bar and tab states of the
+   section menu, TRU's teal buttons, #ccc hairlines, and the pale-teal sidebar from the
+   resources page.
+   --------------------------------------------------------------------------- */
+.tru .gcal {
+  --gcal-line: #ccc;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Reset TRU's global <button> styling inside the calendar; each control restyles itself below */
+.tru .gcal button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease-out,
+    color 0.2s ease-out;
+}
+.tru .gcal button:hover,
+.tru .gcal button:focus {
+  background: none !important;
+  color: inherit;
+}
+.tru .gcal p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Toolbar: same bar as the section menu */
+.tru .gcal__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  justify-content: space-between;
+  background-color: #003e51;
+  color: #fff;
+}
+.tru .gcal__nav {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+}
+.tru .gcal .gcal__navbtn {
+  width: 3.5rem;
+  height: 3.5rem;
+  font-size: 1.125rem;
+  text-align: center;
+}
+.tru .gcal .gcal__today {
+  padding: 0 1.25rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  line-height: 3.5rem;
+}
+.tru .gcal .gcal__label {
+  margin: 0;
+  padding: 0 1.25rem;
+  color: #fff;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 3.5rem;
+  white-space: nowrap;
+}
+.tru .gcal__views {
+  display: flex;
+  align-items: stretch;
+}
+.tru .gcal .gcal__views button {
+  padding: 0 1.25rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  line-height: 3.5rem;
+}
+.tru .gcal .gcal__views button.is-active {
+  background-color: #0a4b5f !important;
+  color: #f1f5f6;
+}
+.tru .gcal .gcal__navbtn:hover,
+.tru .gcal .gcal__today:hover,
+.tru .gcal .gcal__views button:hover {
+  background-color: #f1f5f6 !important;
+  color: #003e51;
+}
+.tru .gcal .gcal__views button.is-active:hover {
+  background-color: #2f697c !important;
+  color: #f1f5f6;
+}
+
+/* Calendar + "upcoming" sidebar, in the 9/3 split TRU uses for content + sidebar */
+.tru .gcal__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+  gap: 1.875rem;
+  margin-top: 1.5rem;
+}
+
+/* Month view */
+.tru .gcal-month {
+  border: 1px solid var(--gcal-line);
+  border-width: 1px 0 0 1px;
+}
+.tru .gcal-month__head,
+.tru .gcal-month__grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+.tru .gcal-month__head > div {
+  padding: 0.5rem 0.625rem;
+  border: 1px solid var(--gcal-line);
+  border-width: 0 1px 1px 0;
+  background-color: #f1f5f6;
+  color: #003e51;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.tru .gcal .gcal-day {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-height: 6.5rem;
+  padding: 0.375rem 0.5rem 0.5rem;
+  border: 1px solid var(--gcal-line);
+  border-width: 0 1px 1px 0;
+  background-color: #fff;
+  text-align: left;
+}
+.tru .gcal .gcal-day:hover {
+  background-color: #effbfb !important;
+}
+.tru .gcal .gcal-day.is-muted {
+  background-color: #f6f6f6;
+  color: #888;
+}
+.tru .gcal-day__num {
+  display: inline-block;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 1rem;
+  font-size: 0.9375rem;
+  line-height: 1.75rem;
+  text-align: center;
+}
+.tru .gcal-day.is-today .gcal-day__num {
+  background-color: #00b0b9;
+  color: #fff;
+  font-weight: 600;
+}
+.tru .gcal-day__events {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1875rem;
+  min-width: 0;
+}
+.tru .gcal-day__more {
+  color: #007b81;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Event chip (month + week views) */
+.tru .gcal-chip {
+  display: block;
+  min-width: 0;
+  padding: 0.125rem 0.375rem;
+  border-left: 3px solid #00b0b9;
+  background-color: #e0f6f7;
+  color: #003e51;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+.tru .gcal-chip--compact {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tru .gcal-chip__time {
+  display: block;
+  color: #007b81;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.tru .gcal-chip__title {
+  font-weight: 600;
+}
+
+/* Week view */
+.tru .gcal-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  border: 1px solid var(--gcal-line);
+  border-width: 1px 0 0 1px;
+}
+.tru .gcal .gcal-week__col {
+  display: flex;
+  flex-direction: column;
+  min-height: 16rem;
+  border: 1px solid var(--gcal-line);
+  border-width: 0 1px 1px 0;
+  background-color: #fff;
+  text-align: left;
+}
+.tru .gcal .gcal-week__col:hover {
+  background-color: #effbfb !important;
+}
+.tru .gcal-week__label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0.5rem 0.625rem;
+  border-bottom: 1px solid var(--gcal-line);
+  background-color: #f1f5f6;
+  color: #003e51;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.tru .gcal-week__label strong {
+  font-size: 1.125rem;
+}
+.tru .gcal-week__col.is-today .gcal-week__label {
+  background-color: #00b0b9;
+  color: #fff;
+}
+.tru .gcal-week__events {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding: 0.5rem;
+}
+
+/* Day view */
+.tru .gcal-dayview {
+  border-top: 1px solid var(--gcal-line);
+}
+.tru .gcal-card {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--gcal-line);
+}
+.tru .gcal-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  color: #007b81;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.tru .gcal-card__tag {
+  padding: 0.125rem 0.5rem;
+  background-color: #003e51;
+  color: #fff;
+}
+.tru .gcal .gcal-card h4 {
+  margin: 0.5rem 0;
+}
+.tru .gcal .gcal-card p {
+  font-size: 1.125rem;
+}
+.tru .gcal .gcal-card .gcal-card__loc {
+  margin-top: 0.5rem;
+  color: #003e51;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+.tru .gcal .gcal-empty {
+  color: #888;
+  font-size: 0.875rem;
+}
+.tru .gcal .gcal-empty--lg {
+  padding: 2rem 0;
+  font-size: 1.125rem;
+}
+
+/* Year view */
+.tru .gcal-year {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border: 1px solid var(--gcal-line);
+  border-width: 1px 0 0 1px;
+}
+.tru .gcal .gcal-year__month {
+  padding: 0.875rem 1rem 1rem;
+  border: 1px solid var(--gcal-line);
+  border-width: 0 1px 1px 0;
+  background-color: #fff;
+  text-align: left;
+}
+.tru .gcal .gcal-year__month:hover {
+  background-color: #effbfb !important;
+}
+.tru .gcal-year__name {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  color: #003e51;
+  font-weight: 600;
+}
+.tru .gcal-year__count {
+  min-width: 1.5rem;
+  padding: 0 0.375rem;
+  background-color: #ffcd00;
+  color: #003e51;
+  font-size: 0.8125rem;
+  line-height: 1.5rem;
+  text-align: center;
+}
+.tru .gcal-year__mini {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+.tru .gcal-year__wd {
+  color: #888;
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  text-align: center;
+}
+.tru .gcal-year__cell {
+  aspect-ratio: 1;
+  background-color: #f1f5f6;
+}
+.tru .gcal-year__cell.is-muted {
+  background-color: transparent;
+}
+.tru .gcal-year__cell.has-events {
+  background-color: #00b0b9;
+}
+.tru .gcal-year__cell.is-today {
+  box-shadow: inset 0 0 0 2px #003e51;
+}
+
+/* Sidebar: same pale panel as TRU's right-hand sidebar */
+.tru .gcal__aside {
+  padding: 0 1.25rem 1.5rem;
+  background-color: #effbfb;
+}
+.tru .gcal .gcal__aside h4 {
+  margin: 1.5rem 0 0;
+}
+.tru .gcal .gcal-upcoming {
+  margin: 0 0 1.5rem;
+  font-size: 1rem;
+  line-height: 1.4;
+  list-style: none;
+}
+.tru .gcal .gcal-upcoming li {
+  border-bottom: 1px solid var(--gcal-line);
+}
+.tru .gcal .gcal-upcoming button {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  width: 100%;
+  padding: 0.75rem 0;
+  text-align: left;
+}
+.tru .gcal-upcoming__date {
+  flex: none;
+  width: 3rem;
+  padding: 0.375rem 0;
+  background-color: #003e51;
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  transition: background-color 0.2s ease-out;
+}
+.tru .gcal-upcoming button:hover .gcal-upcoming__date {
+  background-color: #00b0b9;
+}
+.tru .gcal-upcoming__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  color: #003e51;
+  font-size: 0.875rem;
+}
+.tru .gcal-upcoming__body strong {
+  font-size: 1rem;
+}
+.tru .gcal-upcoming button:hover .gcal-upcoming__body strong {
+  text-decoration: underline;
+}
+
+@media only screen and (max-width: 64rem) {
+  .tru .gcal__layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tru .gcal__aside {
+    padding: 0 1.75rem 1.75rem;
+  }
+  .tru .gcal-year {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media only screen and (max-width: 40rem) {
+  .tru .gcal__toolbar {
+    flex-direction: column;
+  }
+  .tru .gcal__nav {
+    flex-wrap: wrap;
+  }
+  .tru .gcal .gcal__label {
+    padding: 0 1rem;
+    font-size: 1rem;
+    white-space: normal;
+  }
+  .tru .gcal__views {
+    border-top: 1px solid #0a4b5f;
+  }
+  .tru .gcal .gcal__views button {
+    flex: 1;
+    padding: 0;
+    font-size: 1rem;
+    line-height: 2.75rem;
+    text-align: center;
+  }
+  .tru .gcal .gcal__navbtn {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+  .tru .gcal .gcal__today,
+  .tru .gcal .gcal__label {
+    line-height: 2.75rem;
+  }
+  .tru .gcal .gcal-day {
+    min-height: 3.5rem;
+    padding: 0.25rem;
+  }
+  .tru .gcal-month__head > div {
+    padding: 0.375rem 0.25rem;
+    font-size: 0.75rem;
+    text-align: center;
+  }
+  /* no room for titles in a phone-width month grid: show a marker instead */
+  .tru .gcal-day .gcal-chip__title,
+  .tru .gcal-day__more {
+    display: none;
+  }
+  .tru .gcal-day .gcal-chip {
+    height: 0.375rem;
+    padding: 0;
+    border: 0;
+    background-color: #00b0b9;
+  }
+  .tru .gcal-week {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .tru .gcal .gcal-week__col {
+    min-height: 0;
+  }
+  .tru .gcal-year {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .tru .gcal__aside {
+    padding: 0 1rem 1rem;
+  }
+}

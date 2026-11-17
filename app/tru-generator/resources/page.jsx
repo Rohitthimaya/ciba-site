@@ -1,7 +1,12 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import ScrollReveal from "@/components/ScrollReveal";
-import GenChrome from "@/components/GenChrome";
+import { Fragment } from "react";
+import TruShell from "@/components/tru/TruShell";
+import TruAccordion from "@/components/tru/TruAccordion";
+import { findImage } from "@/lib/serverImages";
+
+/*
+ * TRU Generator resources — rebuild of https://www.tru.ca/generator/resources.html
+ * (FAQ accordion + "Startup resources" sidebar) inside the shared TRU page shell.
+ */
 
 export const metadata = {
   title: "Resources — TRU Generator",
@@ -60,19 +65,7 @@ const FAQS = [
   },
   {
     q: "I don't want to run a business, but can I help out?",
-    a: (
-      <>
-        Absolutely. Even if you don&apos;t want to start your own business the TRU
-        Generator can be a great place to meet like-minded peers who could use your
-        skills. It&apos;s also a great place to study!
-        <br />
-        <br />
-        I want to volunteer for events. Sure, send us an email:{" "}
-        <a href="mailto:generator@acceleratebusiness.ca">
-          generator@acceleratebusiness.ca
-        </a>
-      </>
-    ),
+    a: "Absolutely. Even if you don't want to start your own business the TRU Generator can be a great place to meet like-minded peers who could use your skills. It's also a great place to study!",
   },
 ];
 
@@ -88,65 +81,51 @@ const STARTUP_LINKS = [
 ];
 
 export default function TruGeneratorResourcesPage() {
+  const banner =
+    findImage("images/generator/resources-banner") ?? findImage("images/generator/hero") ?? undefined;
+
   return (
-    <>
-      <Navbar />
-      <main className="gen">
-        <GenChrome active="resources" />
-
-        <div className="gen-hero__frame gen-crumbs">
-          <a href="/">Home</a>
-          <span aria-hidden="true">›</span>
-          <a href="/tru-generator">TRU Generator</a>
-          <span aria-hidden="true">›</span>
-          <span>Resources</span>
+    <TruShell
+      active="resources"
+      title="Resources"
+      truBar={false}
+      banner={banner}
+      crumbs={[
+        { label: "TRU Home", href: "https://www.tru.ca/home.html" },
+        { label: "TRU Generator", href: "/tru-generator" },
+        { label: "Resources" },
+      ]}
+    >
+      <div className="row">
+        <div className="medium-9 columns">
+          <h4>Frequently asked questions</h4>
+          <TruAccordion
+            items={FAQS.map((item) => ({
+              q: item.q,
+              a: <p>{item.a}</p>,
+            }))}
+          />
+          <p>
+            I want to volunteer for events. Sure, send us an email:{" "}
+            <a href="mailto:generator@acceleratebusiness.ca">generator@acceleratebusiness.ca</a>
+          </p>
         </div>
-
-        <section className="gen-main gen-main--pad">
-          <div className="gen-hero__frame gen-resources">
-            <h1 className="gen-resources__title reveal">Resources</h1>
-
-            <h2 className="gen-resources__heading reveal">Frequently asked questions</h2>
-            <div className="gen-faq">
-              {FAQS.map((item, i) => (
-                <details
-                  className="gen-faq__item reveal"
-                  style={{ transitionDelay: `${Math.min(i, 8) * 40}ms` }}
-                  key={item.q}
-                >
-                  <summary>{item.q}</summary>
-                  <div className="gen-faq__body">
-                    {typeof item.a === "string" ? <p>{item.a}</p> : item.a}
-                  </div>
-                </details>
-              ))}
-            </div>
-
-            <h2 className="gen-resources__heading reveal">Startup resources</h2>
-            <ul className="gen-startup-links reveal">
+        <div className="medium-3 columns sidebar-right">
+          <div className="widget">
+            <h4 className="altHead">Startup resources</h4>
+            <ul className="block nopadding arrowlist">
               {STARTUP_LINKS.map((link) => (
-                <li key={link.href}>
-                  <a href={link.href} target="_blank" rel="noopener noreferrer">
-                    {link.label} <span aria-hidden="true">›</span>
-                  </a>
-                </li>
+                <Fragment key={link.href}>
+                  <li>
+                    <a href={link.href}>{link.label}</a>
+                  </li>
+                  {/* inline-block items: keep the word space TRU's markup has between them */}{" "}
+                </Fragment>
               ))}
             </ul>
           </div>
-        </section>
-
-        <section className="gen-powered">
-          <div className="container gen-powered__inner reveal">
-            <span className="gen-powered__bolt" aria-hidden="true">
-              ⚡
-            </span>
-            <span className="gen-powered__label">Powered by</span>
-            <img src="/images/ciba-logo.png" alt="Central Interior Business Accelerator" />
-          </div>
-        </section>
-      </main>
-      <Footer />
-      <ScrollReveal />
-    </>
+        </div>
+      </div>
+    </TruShell>
   );
 }

@@ -1,11 +1,15 @@
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import ScrollReveal from "@/components/ScrollReveal";
-import GenChrome from "@/components/GenChrome";
+import TruShell from "@/components/tru/TruShell";
+import TruIcon from "@/components/tru/TruIcon";
 import GenCalendar from "@/components/GenCalendar";
 import { findImage } from "@/lib/serverImages";
 import { dummyImage } from "@/lib/siteImages";
 import { getPublishedEvents, getSiteSettings } from "@/lib/cms";
+
+/*
+ * TRU Generator home — a like-for-like rebuild of https://www.tru.ca/generator.html, plus the
+ * events calendar (which tru.ca does not have). Markup and class names follow TRU's page so the
+ * ported stylesheet (./tru-port.css) applies unchanged.
+ */
 
 export const metadata = {
   title: "TRU Generator — Central Interior Business Accelerator",
@@ -14,147 +18,142 @@ export const metadata = {
 };
 
 const VIDEO_ID = "teA9WDKivuY";
+const EMAIL = "mailto:generator@acceleratebusiness.ca";
 
 const FEATURES = [
   {
     title: "Visit Us",
     text: "Book an appointment to visit us in the Brown Family House of Learning. We are located in the basement.",
-    cta: "Learn more",
-    href: "mailto:generator@acceleratebusiness.ca?subject=Visit%20TRU%20Generator",
+    cta: "Learn More",
+    href: `${EMAIL}?subject=Visit%20TRU%20Generator`,
     img: "images/generator/visit",
-    fallback: dummyImage("ciba-gen-visit", 640, 420),
+    fallback: dummyImage("ciba-gen-visit", 700, 300),
   },
   {
     title: "Events",
     text: "Speakers, workshops, programs, and activities. Look for us where innovative things are happening.",
-    cta: "View calendar",
+    cta: "Learn More",
     href: "#calendar",
     img: "images/generator/events",
-    fallback: dummyImage("ciba-gen-events", 640, 420),
+    fallback: dummyImage("ciba-gen-events", 700, 300),
   },
   {
     title: "Come Meet Us",
     text: "Meet with Generator staff, who will help you formulate your idea and get you started down the right path.",
-    cta: "Get started",
-    href: "mailto:generator@acceleratebusiness.ca?subject=Meet%20TRU%20Generator",
+    cta: "Get Started",
+    href: `${EMAIL}?subject=Meet%20TRU%20Generator`,
     img: "images/generator/meet",
-    fallback: dummyImage("ciba-gen-meet", 640, 420),
+    fallback: dummyImage("ciba-gen-meet", 700, 300),
   },
 ];
 
 export default async function TruGeneratorPage() {
-  const quoteImg = findImage("images/generator/quote") ?? dummyImage("ciba-gen-quote", 1400, 700);
+  const banner = findImage("images/generator/hero") ?? undefined;
+  const quoteImg = findImage("images/generator/quote") ?? dummyImage("ciba-gen-quote", 1100, 300);
+  const cibaLogo = findImage("images/generator/ciba-logo") ?? "/images/ciba-logo.png";
   const [events, settings] = await Promise.all([getPublishedEvents(), getSiteSettings()]);
   const videoId = settings.generator?.videoId || VIDEO_ID;
 
   return (
-    <>
-      <Navbar />
-      <main className="gen">
-        <GenChrome active="home" />
-
-        <div className="gen-hero__frame gen-crumbs">
-          <a href="/">Home</a>
-          <span aria-hidden="true">›</span>
-          <span>TRU Generator</span>
+    <TruShell
+      active="home"
+      title="TRU Generator"
+      hideTitle
+      truBar={false}
+      banner={banner}
+      crumbs={[{ label: "TRU Home", href: "https://www.tru.ca/home.html" }, { label: "TRU Generator" }]}
+    >
+      {/* Video + intro */}
+      <div className="row">
+        <div className="medium-8 columns">
+          <div className="flex-video widescreen">
+            <iframe
+              src={`https://www.youtube.com/embed/${videoId}?rel=0`}
+              title="Visit TRU Generator"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
         </div>
+        <div className="medium-4 columns">
+          <h2>Today is a great day to start a business</h2>
+          <p>
+            You&apos;ve already learned how to juggle a full schedule, a social life and a bank
+            account! You have some of the basic skills required to become a successful
+            entrepreneur. The TRU Generator will help develop those skills and teach you how to
+            take an entrepreneurial approach to building your business or career.
+          </p>
+        </div>
+      </div>
 
-        {/* Intro + video */}
-        <section className="gen-main" id="about-gen">
-          <div className="gen-hero__frame gen-intro">
-            <div className="gen-intro__media reveal">
-              <div className="gen-video">
-                <iframe
-                  src={`https://www.youtube.com/embed/${videoId}?rel=0`}
-                  title="Visit TRU Generator"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
-            </div>
-            <div className="gen-intro__text reveal">
-              <h2>Today is a great day to start a business</h2>
-              <p>
-                You&apos;ve already learned how to juggle a full schedule, a social life and a
-                bank account! You have some of the basic skills required to become a
-                successful entrepreneur. The TRU Generator will help develop those skills
-                and teach you how to take an entrepreneurial approach to building your
-                business or career.
-              </p>
-            </div>
+      <hr className="spacer" />
+
+      {/* Three teasers */}
+      <div className="row">
+        {FEATURES.map((f) => (
+          <div className="medium-4 columns" key={f.title}>
+            <img src={findImage(f.img) ?? f.fallback} alt="" />
+            <h4>{f.title}</h4>
+            <p>{f.text}</p>
+            <a className="button tealbg nomargin" href={f.href}>
+              {f.cta}
+            </a>
           </div>
-        </section>
+        ))}
+      </div>
 
-        {/* Feature cards */}
-        <section className="gen-features-wrap" id="events">
-          <div className="gen-hero__frame">
-            <div className="gen-features">
-              {FEATURES.map((f, i) => (
-                <article
-                  className="gen-feature reveal"
-                  style={{ transitionDelay: `${i * 90}ms` }}
-                  key={f.title}
-                >
-                  <img src={findImage(f.img) ?? f.fallback} alt="" />
-                  <div className="gen-feature__body">
-                    <h3>{f.title}</h3>
-                    <p>{f.text}</p>
-                    <a
-                      className="gen-btn gen-btn--teal"
-                      href={f.href}
-                      {...(f.external
-                        ? { target: "_blank", rel: "noopener noreferrer" }
-                        : {})}
-                    >
-                      {f.cta} <span aria-hidden="true">›</span>
-                    </a>
-                  </div>
-                </article>
-              ))}
-            </div>
+      <hr className="spacer" />
+
+      {/* Events calendar — our addition; everything else on this page mirrors tru.ca */}
+      <section id="calendar" aria-labelledby="calendar-heading">
+        <h2 id="calendar-heading">Upcoming events</h2>
+        <p>
+          Workshops, mentorship hours, speaker nights, and more — browse by month, week, day, or
+          year.
+        </p>
+        <GenCalendar events={events} />
+      </section>
+
+      <hr className="spacer" />
+
+      {/* Testimonial over a photo */}
+      <div
+        id="background"
+        className="widget"
+        style={{ paddingTop: "9rem", paddingBottom: 0, "--tru-quote": `url("${quoteImg}")` }}
+      >
+        <div id="mentorship" className="widget v1top v1bottom bluebg-st clearfix">
+          <p className="lead whitetext size-22">
+            &ldquo;Startup Academy Workshops helped our team focus on next steps and get the
+            coaching required to launch our business.&rdquo; &mdash; Lee Bergstrand, Amplytica.io
+          </p>
+        </div>
+      </div>
+
+      <hr className="spacer" />
+
+      {/* Powered by CIBA */}
+      <div className="panel greybg-pale">
+        <div className="row">
+          <div className="medium-3 columns">&nbsp;</div>
+          <div className="medium-3 columns">
+            <h4 className="right">
+              <TruIcon name="bolt" sp className="yellowtext" />
+              Powered by:
+            </h4>
           </div>
-        </section>
-
-        {/* Events calendar */}
-        <section className="gen-calendar-wrap" id="calendar">
-          <div className="gen-hero__frame">
-            <div className="gen-calendar-wrap__head reveal">
-              <h2>Upcoming events</h2>
-              <p>
-                Workshops, mentorship hours, speaker nights, and more — browse by
-                month, week, day, or year.
-              </p>
-            </div>
-            <div className="reveal">
-              <GenCalendar events={events} />
-            </div>
+          <div className="medium-3 columns">
+            <a className="nobg" href="/">
+              <img
+                style={{ marginTop: 10 }}
+                src={cibaLogo}
+                alt="Central Interior Business Accelerator"
+              />
+            </a>
           </div>
-        </section>
-
-        {/* Mentorship / testimonial */}
-        <section className="gen-quote" id="mentorship">
-          <img className="gen-quote__bg" src={quoteImg} alt="" />
-          <div className="gen-quote__shade" />
-          <blockquote className="container gen-quote__inner reveal">
-            <p>
-              &ldquo;Startup Academy Workshops helped our team focus on next steps and get
-              the coaching required to launch our business.&rdquo;
-            </p>
-            <cite>— Lee Bergstrand, Amplytica.io</cite>
-          </blockquote>
-        </section>
-
-        {/* Powered by / partnership */}
-        <section className="gen-powered">
-          <div className="container gen-powered__inner reveal">
-            <span className="gen-powered__bolt" aria-hidden="true">⚡</span>
-            <span className="gen-powered__label">Powered by</span>
-            <img src="/images/ciba-logo.png" alt="Central Interior Business Accelerator" />
-          </div>
-        </section>
-      </main>
-      <Footer />
-      <ScrollReveal />
-    </>
+          <div className="medium-3 columns">&nbsp;</div>
+        </div>
+      </div>
+    </TruShell>
   );
 }
