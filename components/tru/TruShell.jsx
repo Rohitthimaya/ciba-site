@@ -7,7 +7,7 @@ import {
   FOOTER_COLUMNS,
   FOOTER_MOTTO_LINKS,
   FOOTER_SOCIALS,
-  GENERATOR_EMAIL,
+  GENERATOR_CONTACT_FORM,
   LIBRARY_FIELDS,
   MOBILE_CTAS,
   MOBILE_MENU,
@@ -20,7 +20,6 @@ import {
 
 const NBSP = "\u00a0";
 const HOME = "/tru-generator";
-const JOIN = `mailto:${GENERATOR_EMAIL}?subject=Join%20TRU%20Generator`;
 const TO_TOP_AFTER = 300; // px scrolled before the round "back to top" buttons fade in
 
 function scrollToTop() {
@@ -411,7 +410,7 @@ export default function TruShell({
                       </h4>
                     </div>
                     <div className="small-12 medium-3 large-2 columns">
-                      <a className="button nomargin radius yellowbg m1top" href={JOIN}>
+                      <a className="button nomargin radius yellowbg m1top" href={GENERATOR_CONTACT_FORM}>
                         Join TRU Generator
                       </a>
                     </div>

@@ -3,14 +3,15 @@
  * Mirrors the navigation on https://www.tru.ca/generator.html.
  */
 
-export const GENERATOR_EMAIL = "generator@acceleratebusiness.ca";
+/** TRU's "Contact TRU Generator" form (hosted on tru.ca; submissions go to TRU). */
+export const GENERATOR_CONTACT_FORM = "https://www.tru.ca/forms/generator/contact/";
 
 /** Section menu under the banner. `key` is matched against TruShell's `active` prop. */
 export const SECTION_NAV = [
   { key: "home", label: "TRU Generator", href: "/tru-generator" },
   { key: "events", label: "Events", href: "/tru-generator#calendar" },
   { key: "mentorship", label: "Mentorship", href: "/tru-generator#mentorship" },
-  { key: "contact", label: "Contact Us", href: `mailto:${GENERATOR_EMAIL}` },
+  { key: "contact", label: "Contact Us", href: GENERATOR_CONTACT_FORM },
   { key: "resources", label: "Resources", href: "/tru-generator/resources" },
 ];
 

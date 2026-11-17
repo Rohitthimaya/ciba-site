@@ -1,5 +1,6 @@
 import TruShell from "@/components/tru/TruShell";
 import TruIcon from "@/components/tru/TruIcon";
+import { GENERATOR_CONTACT_FORM } from "@/components/tru/truLinks";
 import GenCalendar from "@/components/GenCalendar";
 import { findImage } from "@/lib/serverImages";
 import { dummyImage } from "@/lib/siteImages";
@@ -18,14 +19,13 @@ export const metadata = {
 };
 
 const VIDEO_ID = "teA9WDKivuY";
-const EMAIL = "mailto:generator@acceleratebusiness.ca";
 
 const FEATURES = [
   {
     title: "Visit Us",
-    text: "Book an appointment to visit us in the Brown Family House of Learning. We are located in the basement.",
+    text: "Book an appointment to visit us in OM662, our new Generator office at Thompson Rivers University.",
     cta: "Learn More",
-    href: `${EMAIL}?subject=Visit%20TRU%20Generator`,
+    href: GENERATOR_CONTACT_FORM,
     img: "images/generator/visit",
     fallback: dummyImage("ciba-gen-visit", 700, 300),
   },
@@ -41,7 +41,7 @@ const FEATURES = [
     title: "Come Meet Us",
     text: "Meet with Generator staff, who will help you formulate your idea and get you started down the right path.",
     cta: "Get Started",
-    href: `${EMAIL}?subject=Meet%20TRU%20Generator`,
+    href: GENERATOR_CONTACT_FORM,
     img: "images/generator/meet",
     fallback: dummyImage("ciba-gen-meet", 700, 300),
   },
@@ -111,7 +111,7 @@ export default async function TruGeneratorPage() {
           Workshops, mentorship hours, speaker nights, and more — browse by month, week, day, or
           year.
         </p>
-        <GenCalendar events={events} />
+        <GenCalendar events={events} renderedAt={new Date().toISOString()} />
       </section>
 
       <hr className="spacer" />

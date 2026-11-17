@@ -442,6 +442,9 @@
   font-size: 0.9375rem;
   font-weight: 600;
 }
+.tru .gcal .gcal-card .gcal-card__cta {
+  margin: 1rem 0 0;
+}
 .tru .gcal .gcal-empty {
   color: #888;
   font-size: 0.875rem;

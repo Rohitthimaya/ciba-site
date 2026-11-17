@@ -1,13 +1,25 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { eventsInRange, eventsOnDay, getUpcomingEvents } from "@/lib/generatorEvents";
+import { useEffect, useMemo, useState } from "react";
+import {
+  eventEnd,
+  eventStart,
+  eventsInRange,
+  eventsOnDay,
+  getUpcomingEvents,
+  kamloopsTime,
+} from "@/lib/generatorEvents";
 import TruIcon from "@/components/tru/TruIcon";
+import { GENERATOR_CONTACT_FORM } from "@/components/tru/truLinks";
 
 /*
  * Events calendar for the TRU Generator page (month / week / day / year views plus an
  * "upcoming" sidebar). It renders inside the TRU page shell, so it is styled by the
  * "Events calendar" section of app/tru-generator/tru.css and uses TRU's button classes.
+ *
+ * Events are { id, title, tag, start, end, description?, location?, registerUrl?, allDay? }.
+ * An `allDay` event has no confirmed time: it is listed on its day without one. Days and times
+ * are always Kamloops time, whatever the visitor's time zone.
  */
 
 const VIEWS = [
@@ -59,11 +71,16 @@ function startOfWeek(d) {
   return x;
 }
 
-function formatTime(iso) {
-  return new Date(iso).toLocaleTimeString(undefined, {
-    hour: "numeric",
-    minute: "2-digit",
-  });
+/* Times and dates are written out by hand rather than with toLocale...(): the server and the
+   browser can disagree on the locale's wording ("5:30 PM" vs "5:30 p.m."), which breaks hydration. */
+function formatTime(date) {
+  const hour = date.getHours();
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${hour % 12 || 12}:${minutes} ${hour < 12 ? "a.m." : "p.m."}`;
+}
+
+function formatShortDate(date) {
+  return `${MONTHS[date.getMonth()].slice(0, 3)} ${date.getDate()}`;
 }
 
 function formatRangeLabel(view, cursor) {
@@ -77,7 +94,7 @@ function formatRangeLabel(view, cursor) {
     }
     return `${MONTHS[start.getMonth()]} ${start.getDate()} – ${MONTHS[end.getMonth()]} ${end.getDate()}, ${end.getFullYear()}`;
   }
-  return cursor.toLocaleDateString(undefined, {
+  return cursor.toLocaleDateString("en-CA", {
     weekday: "long",
     month: "long",
     day: "numeric",
@@ -97,7 +114,9 @@ function shiftCursor(view, cursor, dir) {
 function EventChip({ event, compact = false }) {
   return (
     <div className={`gcal-chip${compact ? " gcal-chip--compact" : ""}`} title={event.title}>
-      {!compact && <span className="gcal-chip__time">{formatTime(event.start)}</span>}
+      {!compact && !event.allDay && (
+        <span className="gcal-chip__time">{formatTime(eventStart(event))}</span>
+      )}
       <span className="gcal-chip__title">{event.title}</span>
     </div>
   );
@@ -195,13 +214,20 @@ function DayList({ cursor, events }) {
         <article key={e.id} className="gcal-card">
           <div className="gcal-card__meta">
             <span className="gcal-card__tag">{e.tag}</span>
-            <span>
-              {formatTime(e.start)} – {formatTime(e.end)}
-            </span>
+            {!e.allDay && (
+              <span>
+                {formatTime(eventStart(e))} – {formatTime(eventEnd(e))}
+              </span>
+            )}
           </div>
           <h4>{e.title}</h4>
-          <p>{e.description}</p>
-          <p className="gcal-card__loc">{e.location}</p>
+          {e.description && <p>{e.description}</p>}
+          {e.location && <p className="gcal-card__loc">{e.location}</p>}
+          {e.registerUrl && (
+            <a className="button tealbg gcal-card__cta" href={e.registerUrl}>
+              Register
+            </a>
+          )}
         </article>
       ))}
     </div>
@@ -264,11 +290,18 @@ function YearGrid({ cursor, today, onSelectMonth, events }) {
   );
 }
 
-export default function GenCalendar({ events = [] }) {
-  const today = useMemo(() => startOfDay(new Date()), []);
+export default function GenCalendar({ events = [], renderedAt }) {
+  // The page is prerendered, so its HTML can be days older than the visit. The first render has
+  // to reproduce that HTML exactly, so it uses the moment the page was built (`renderedAt`);
+  // once mounted, the calendar moves on to the actual time.
+  const [now, setNow] = useState(() => (renderedAt ? new Date(renderedAt) : new Date()));
+  useEffect(() => setNow(new Date()), []);
+
+  const today = useMemo(() => startOfDay(kamloopsTime(now)), [now]);
   const [view, setView] = useState("month");
-  const [cursor, setCursor] = useState(today);
-  const upcoming = useMemo(() => getUpcomingEvents(events, 6), [events]);
+  const [picked, setCursor] = useState(null); // the date the visitor moved to, if any
+  const cursor = picked ?? today;
+  const upcoming = useMemo(() => getUpcomingEvents(events, 6, now), [events, now]);
 
   const label = formatRangeLabel(view, cursor);
 
@@ -284,7 +317,7 @@ export default function GenCalendar({ events = [] }) {
           >
             <TruIcon name="chevron-left" />
           </button>
-          <button type="button" className="gcal__today" onClick={() => setCursor(today)}>
+          <button type="button" className="gcal__today" onClick={() => setCursor(null)}>
             Today
           </button>
           <button
@@ -363,30 +396,20 @@ export default function GenCalendar({ events = [] }) {
                 <button
                   type="button"
                   onClick={() => {
-                    setCursor(startOfDay(new Date(e.start)));
+                    setCursor(startOfDay(eventStart(e)));
                     setView("day");
                   }}
                 >
-                  <span className="gcal-upcoming__date">
-                    {new Date(e.start).toLocaleDateString(undefined, {
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </span>
+                  <span className="gcal-upcoming__date">{formatShortDate(eventStart(e))}</span>
                   <span className="gcal-upcoming__body">
                     <strong>{e.title}</strong>
-                    <span>
-                      {formatTime(e.start)} · {e.tag}
-                    </span>
+                    <span>{e.allDay ? e.tag : `${formatTime(eventStart(e))} · ${e.tag}`}</span>
                   </span>
                 </button>
               </li>
             ))}
           </ul>
-          <a
-            className="button tealbg nomargin"
-            href="mailto:generator@acceleratebusiness.ca?subject=TRU%20Generator%20Events"
-          >
+          <a className="button tealbg nomargin" href={GENERATOR_CONTACT_FORM}>
             Suggest an event
           </a>
         </aside>

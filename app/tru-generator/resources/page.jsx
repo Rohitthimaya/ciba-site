@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import TruShell from "@/components/tru/TruShell";
 import TruAccordion from "@/components/tru/TruAccordion";
+import { GENERATOR_CONTACT_FORM } from "@/components/tru/truLinks";
 import { findImage } from "@/lib/serverImages";
 
 /*
@@ -18,10 +19,6 @@ const FAQS = [
   {
     q: "What is the TRU Generator?",
     a: "We provide mentorship, education, and entrepreneurial support, as well as helping identify possible grant opportunities for TRU students, alumni, faculty, and staff. We help turn their passions into paychecks! We also host educational events and workshops, inspirational speakers, and startup coffees. Not to mention, we're a pretty cool place to study. Come and visit us!",
-  },
-  {
-    q: "What is Kamloops Innovation Centre?",
-    a: "We're the organization that supports the TRU Generator! We are a non-profit that supports tech entrepreneurs by offering affordable programs that guide, coach and mentor early-stage ventures, collaborative and shared office spaces, and host, facilitate, initiate, partner, sponsor, and generally support all sorts of events that help to grow the tech community in Kamloops and our region.",
   },
   {
     q: "What is the TRU Generator space?",
@@ -52,14 +49,6 @@ const FAQS = [
     a: "Not necessarily. We can help you navigate the principles around Lean Startup and how to start a business with the least amount of investment as possible. You will, however, need the right amount of time, energy and dedication necessary to create a successful startup.",
   },
   {
-    q: "Does the TRU Generator or Kamloops Innovation take a share in my company?",
-    a: "No, we do not. Kamloops Innovation is a non-profit funded by the Province of BC and neither the TRU Generator nor Kamloops Innovation will take any stakes in your company. We're just here to help!",
-  },
-  {
-    q: "What happens after I leave TRU?",
-    a: "Some companies leave the TRU Generator and go off on their own, some graduate to Kamloops Innovation programs where you'll be brought into our North Shore facility and your mentorship will continue.",
-  },
-  {
     q: "I'm not interested in starting a business right now, but can I still participate?",
     a: "Absolutely. You can level up your skills for when you embark on an entrepreneurial journey in the future or apply this approach to the work you will do. TRU Generator events are open to everyone.",
   },
@@ -73,10 +62,6 @@ const STARTUP_LINKS = [
   {
     label: "Lean Startup Principles",
     href: "http://theleanstartup.com/principles",
-  },
-  {
-    label: "Business Model Canvas",
-    href: "https://canvanizer.com/new/business-model-canvas",
   },
 ];
 
@@ -106,8 +91,8 @@ export default function TruGeneratorResourcesPage() {
             }))}
           />
           <p>
-            I want to volunteer for events. Sure, send us an email:{" "}
-            <a href="mailto:generator@acceleratebusiness.ca">generator@acceleratebusiness.ca</a>
+            I want to volunteer for events. Sure, let us know through our{" "}
+            <a href={GENERATOR_CONTACT_FORM}>contact form</a>.
           </p>
         </div>
         <div className="medium-3 columns sidebar-right">
